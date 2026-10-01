@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>My Game Site</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #111;
+            color: white;
+        }
+
+        header {
+            padding: 30px 20px;
+            text-align: center;
+            background: #181818;
+            border-bottom: 1px solid #333;
+        }
+
+        header h1 {
+            margin: 0 0 10px;
+            font-size: 42px;
+        }
+
+        header p {
+            margin: 0;
+            color: #aaa;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: auto;
+            padding: 25px 20px;
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 25px;
+        }
+
+        #search {
+            flex: 1;
+            min-width: 200px;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #444;
+            background: #222;
+            color: white;
+            font-size: 16px;
+        }
+
+        .category-button {
+            padding: 12px 16px;
+            border: 1px solid #444;
+            border-radius: 8px;
+            background: #222;
+            color: white;
+            cursor: pointer;
+        }
+
+        .category-button:hover,
+        .category-button.active {
+            background: #333;
+        }
+
+        .games-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .games-header h2 {
+            margin: 0;
+        }
+
+        #game-count {
+            color: #999;
+        }
+
+        #game-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .empty {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 60px 20px;
+            border: 1px dashed #444;
+            border-radius: 12px;
+            color: #999;
+        }
+
+        .empty h3 {
+            color: white;
+            margin-bottom: 8px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px;
+            margin-top: 40px;
+            border-top: 1px solid #333;
+            color: #777;
+        }
+
+        @media (max-width: 600px) {
+            header h1 {
+                font-size: 32px;
+            }
+
+            #game-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>🎮 My Game Site</h1>
+        <p>Your collection of HTML5 games</p>
+    </header>
+
+    <main class="container">
+
+        <!-- Search and Categories -->
+        <div class="controls">
+
+            <input
+                type="search"
+                id="search"
+                placeholder="Search games..."
+                aria-label="Search games"
+            >
+
+            <button class="category-button active" data-category="all">
+                All Games
+            </button>
+
+            <button class="category-button" data-category="arcade">
+                Arcade
+            </button>
+
+            <button class="category-button" data-category="action">
+                Action
+            </button>
+
+            <button class="category-button" data-category="puzzle">
+                Puzzle
+            </button>
+
+            <button class="category-button" data-category="other">
+                Other
+            </button>
+
+        </div>
+
+        <!-- Games -->
+        <div class="games-header">
+            <h2>Games</h2>
+            <span id="game-count">0 games</span>
+        </div>
+
+        <section id="game-grid">
+
+            <div class="empty">
+                <h3>No games added yet</h3>
+                <p>
+                    Add your own HTML5 games to the site when you're ready.
+                </p>
+            </div>
+
+        </section>
+
+    </main>
+
+    <footer>
+        Built with HTML5 • My Game Site
+    </footer>
+
+
+    <script>
+
+        /*
+            ========================================
+            GAME LIST
+            ========================================
+
+            Add your games here later.
+
+            Example:
+
+            {
+                name: "My Game",
+                category: "arcade",
+                url: "games/my-game/index.html"
+            }
+
+            Categories:
+            arcade
+            action
+            puzzle
+            other
+        */
+
+        const games = [
+            // Your games will go here.
+        ];
+
+
+        /*
+            ========================================
+            GAME WEBSITE CODE
+            ========================================
+        */
+
+        const gameGrid = document.getElementById("game-grid");
+        const gameCount = document.getElementById("game-count");
+        const search = document.getElementById("search");
+
+        const categoryButtons =
+            document.querySelectorAll(".category-button");
+
+        let selectedCategory = "all";
+
+
+        function displayGames() {
+
+            const searchText =
+                search.value.toLowerCase().trim();
+
+            const filteredGames = games.filter(game => {
+
+                const matchesCategory =
+                    selectedCategory === "all" ||
+                    game.category === selectedCategory;
+
+                const matchesSearch =
+                    game.name.toLowerCase().includes(searchText);
+
+                return matchesCategory && matchesSearch;
+            });
+
+
+            gameGrid.innerHTML = "";
+
+
+            if (filteredGames.length === 0) {
+
+                const empty = document.createElement("div");
+
+                empty.className = "empty";
+
+                const title = document.createElement("h3");
+
+                title.textContent =
+                    games.length === 0
+                        ? "No games added yet"
+                        : "No games found";
+
+                const text = document.createElement("p");
+
+                text.textContent =
+                    games.length === 0
+                        ? "Add your own HTML5 games to the site."
+                        : "Try a different search or category.";
+
+                empty.appendChild(title);
+                empty.appendChild(text);
+
+                gameGrid.appendChild(empty);
+
+            } else {
+
+                filteredGames.forEach(game => {
+
+                    const card =
+                        document.createElement("div");
+
+                    card.style.cssText = `
+                        background: #1c1c1c;
+                        border: 1px solid #333;
+                        border-radius: 12px;
+                        padding: 20px;
+                    `;
+
+
+                    const title =
+                        document.createElement("h3");
+
+                    title.textContent = game.name;
+
+
+                    const category =
+                        document.createElement("p");
+
+                    category.textContent =
+                        game.category;
+
+                    category.style.color = "#999";
+
+
+                    const playButton =
+                        document.createElement("a");
+
+                    playButton.textContent = "Play";
+
+                    playButton.href = game.url;
+
+                    playButton.style.cssText = `
+                        display: inline-block;
+                        padding: 10px 15px;
+                        background: #333;
+                        color: white;
+                        text-decoration: none;
+                        border-radius: 8px;
+                        margin-top: 10px;
+                    `;
+
+
+                    card.appendChild(title);
+                    card.appendChild(category);
+                    card.appendChild(playButton);
+
+                    gameGrid.appendChild(card);
+
+                });
+            }
+
+
+            gameCount.textContent =
+                filteredGames.length +
+                (filteredGames.length === 1
+                    ? " game"
+                    : " games");
+        }
+
+
+        /*
+            SEARCH
+        */
+
+        search.addEventListener(
+            "input",
+            displayGames
+        );
+
+
+        /*
+            CATEGORY BUTTONS
+        */
+
+        categoryButtons.forEach(button => {
+
+            button.addEventListener("click", () => {
+
+                selectedCategory =
+                    button.dataset.category;
+
+
+                categoryButtons.forEach(btn => {
+                    btn.classList.remove("active");
+                });
+
+
+                button.classList.add("active");
+
+
+                displayGames();
+
+            });
+
+        });
+
+
+        /*
+            INITIAL LOAD
+        */
+
+        displayGames();
+
+    </script>
+
+</body>
+</html>
